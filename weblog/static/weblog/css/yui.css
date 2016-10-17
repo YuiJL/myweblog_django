@@ -136,6 +136,9 @@ a:hover {
     padding-left: 15%;
 }
 
+#randomlabel {
+    font-family: Sans-serif;
+}
 
 /* css for blogs.html */
 #home .text-right {

@@ -1,7 +1,7 @@
 new Vue({
     el: '#blog',
     data: {
-        url: '/api/blogs',
+        url: '/api/blog/',
         blog: {
             title: '',
             tag: '',
@@ -15,8 +15,8 @@ new Vue({
         id.pop();
         if (id.pop() === 'edit') {
             var auto_id = id.pop();
-            self.url = self.url + '/' + auto_id;
-            $.getJSON('/api/blogs/' + id, function(blog) {
+            self.url = self.url + auto_id;
+            $.getJSON('/api/blog/' + auto_id + '/', function(blog) {
                 self.blog = blog;
             });
         }
@@ -32,8 +32,8 @@ new Vue({
                     content: self.blog.content
                 },
                 method: "POST"
-            }).done(function(blog) {
-                return location.assign(location.pathname.split('manage')[0] + 'blog/' + blog.blog_id);
+            }).done(function(data) {
+                return location.assign(location.pathname.split('blog')[0] + 'blog/' + data.auto_id + '/');
             }).fail(function(xhr) {
                 self.message = xhr.responseText;
                 return $('.alert').show();

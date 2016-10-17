@@ -1,24 +1,24 @@
 {% extends 'weblog/sidenav.html' %}
-
+{% load weblog_extras %}
 {% block title %}{{ blog.title }}{% endblock %}
 {% block content %}
 <div class="col-sm-9" id="main">
     <h2 class="text-primary">
         {{ blog.title }}
-        {% if request.get_user.admin %}
+        {% if request.get_user.name == blog.author.name and request.get_user.admin %}
         <a href="/blog/{{blog.auto_id}}/edit/">
             <button class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i></button>
         </a>
         {% endif %}
     </h2>
-    <h4 class="text-muted"><i class="glyphicon glyphicon-time"></i> Posted by {{ blog.author }}, {{ blog.post_date }}
-        {% if not blog.new_post %}/ Last modified: {{ blog.last_modified }} {% endif %}</h4>
+    <h4 class="text-muted"><i class="glyphicon glyphicon-time"></i> Posted by {{ blog.author.name }}, {{ blog.post_date|date:"M d/Y, h:i:s a" }}
+        {% if not blog.new_post %}/ Last modified: {{ blog.last_modified|date:"M d/Y, h:i:s a" }} {% endif %}</h4>
     <h4>
         {% for tag in blog.tag.split %}
-        <span class="label label-{{ labels|random }}">{{ tag }}</span>
+        <span class="label label-{{ labels|random }}" id="randomlabel">{{ tag }}</span>
         {% endfor %}
     </h4>
-    {{ blog.content|safe }}<hr>
+    {{ blog.content|markdown|safe }}<hr>
     {% if request.get_user %}
     <h4>Leave a comment:</h4>
     <form class="form" @submit.prevent="submit">
@@ -39,7 +39,7 @@
             <img :src="c.image" class="img-circle" alt="Avatar" />
         </div>
         <div class="col-sm-10" id="replybody">
-            <h4 v-if="c.user==='{{blog.author}}'" class="text-primary" v-text="c.user"></h4>
+            <h4 v-if="c.user==='{{blog.author.name}}'" class="text-primary" v-text="c.user"></h4>
             <h4 v-else class="text-info" v-text="c.user"></h4><h4></h4>
             <h4><small v-text="c.post_date"></small></h4>
             <h4 style="float:right" class="text-muted" v-text="'#'+(comments.length-index)"></h4>
@@ -59,7 +59,7 @@
                     <img :src="sub.image" class="img-circle" alt="Avatar" />
                 </div>
                 <div class="col-sm-11" id="replybody">
-                    <h5 v-if="sub.user==='{{blog.author}}'" class="text-primary" v-text="sub.user"></h5>
+                    <h5 v-if="sub.user==='{{blog.author.name}}'" class="text-primary" v-text="sub.user"></h5>
                     <h5 v-else class="text-info" v-text="sub.user"></h5><h5></h5>
                     <h4><small v-text="sub.post_date"></small></h4>
                     <p v-html="sub.content"></p>
