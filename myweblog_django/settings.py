@@ -19,6 +19,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
+# reCAPTCHA key pair, please keep SECRET
+RECAPTCHA_SITE_KEY = "6LcD7QcUAAAAACmXjSwnke9yMsCLi0nuf9e5QRQa"
+RECAPTCHA_SECRET_KEY = "6LcD7QcUAAAAAGr9FCwLwjkllkq5CVUGmhpWzvCM" 
+
+# Cookie name
+COOKIE_NAME = 'MyWeblogSession'
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'c4_*u70v(d2hc3#nf*2y(h(!u8$*9r=5$(%fa4j(htbiqk34_b'
 
@@ -41,10 +48,10 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'weblog.middleware.CookieMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
