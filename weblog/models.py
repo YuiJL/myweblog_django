@@ -34,7 +34,7 @@ class Blog(models.Model):
     content = models.TextField()
     post_date = models.DateTimeField()
     last_modified = models.DateTimeField(auto_now=True)
-    new_post = models.BooleanField(default=False)
+    new_post = models.BooleanField(default=True)
     
     def __str__(self):
         return self.title
@@ -43,6 +43,7 @@ class Blog(models.Model):
         return self.content[:140]
     
     def save(self, *args, **kw):
+        super().save(*args, **kw)
         self.auto_id = self.post_date.year * 10000 + self.id
         super().save(*args, **kw)
     
