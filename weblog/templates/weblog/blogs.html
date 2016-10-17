@@ -1,0 +1,52 @@
+{% extends 'weblog/sidenav.html' %}
+{% block title %}Jiayi's Blog{% endblock %}
+{% block content %}
+<div class="col-sm-9" id="home">
+    <div class="text-right">
+        <button class="btn btn-default btn-xs" @click="viewmode('?view=catalog')">
+            <span class="glyphicon glyphicon-list"></span> Catalog View</button>
+        <button class="btn btn-default btn-xs" @click="viewmode('?view=summary')">
+            <span class="glyphicon glyphicon-th"></span> Summary View</button>
+    </div>
+    {% if request.get_view != 'catalog' %}
+    {% for blog in blog_list %}
+    <h3 class="text-primary">{{ blog.title }}</h3>
+    <h4><small><i class="glyphicon glyphicon-time"></i> Posted by {{ blog.author.name }}, {{ blog.post_date }}
+        {% if not blog.new_post %}/ Last modified: {{ blog.last_modified }} {% endif %}</small></h4>
+    <h5>{% for tag in blog.tag.split %}<span class="label label-{{ labels|random }}">{{ tag }}</span> {% endfor %}</h5>
+    {{ blog.summary }}
+    <p><a href="blog/{{ blog.auto_id }}">Read More <span class="glyphicon glyphicon-chevron-right"></span></a></p><hr>
+    {% endfor %}
+    {% else %}
+    <table class="table">
+        <tbody>
+            {% for blog in blog_list %}
+            <tr>
+                <td class="col-sm-6"><a href="blog/{{ blog.auto_id }}">{{ blog.title }}</a></td>
+                <td class="col-sm-2 text-right">{{ blog.author }}</td>
+                <td class="col-sm-4 text-right">{{ blog.post_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    <div class="text-center">
+        <ul class="pagination pagination-sm">
+            {% for p in pages %}
+            {% if p == page %}
+            <li class="active">
+            {% else %}
+            <li>
+            {% endif %}
+                {% if p != page %}<a href="/blogs/{{p}}">{{ p }}</a>
+                {% else %}<a>{{ p }}</a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="/static/weblog/js/blogs.js"></script>
+{% endblock %}

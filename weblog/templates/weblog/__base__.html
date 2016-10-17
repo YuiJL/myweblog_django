@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% block meta %}<!-- block meta -->{% endblock %}
+    {% load static %}
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:500" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="{% static 'weblog/css/yui.css' %}" />
+    <link rel="stylesheet" href="{% static 'weblog/css/style.css' %}" />
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-fixed">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand"><i class="glyphicon glyphicon-menu-hamburger"></i></a>
+            </div>
+            <ul class="nav navbar-nav" id="navbarleft">
+                <li class="active"><a href="/"><i class="glyphicon glyphicon-home"></i> Home</a></li>
+                <li><a href="#"><i class="glyphicon glyphicon-send"></i> Forum</a></li>
+                <li>
+                    <a target="_blank" href="https://github.com/YuiJL/myweblog_django">
+                        <i class="glyphicon glyphicon-fire"></i> Source
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right" id="navbarright">
+                {% if request.get_user %}
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" id="user"> {{ request.get_user.name }}
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% if request.get_user.admin %}
+                        <li><a href="/blog/new/"><span class="glyphicon glyphicon-plus"></span> New blog</a></li>
+                        {% endif %}
+                        <li><a data-toggle="modal" data-target="#upload" id="avatar"><span class="glyphicon glyphicon-picture"></span> Update avatar</a></li>
+                        <li><a href="/signout"><span class="glyphicon glyphicon-log-out"></span> Sign out</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                <li><a data-toggle="modal" data-target="#signin" @click.prevent="clear">
+                    <i class="glyphicon glyphicon-leaf"></i> Sign in</a>
+                </li>
+                <li><a href="/register"><i class="glyphicon glyphicon-tint"></i> Sign up</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid" id="control">
+        <div class="row content">
+            {% block content %}
+            {% endblock %}
+            {% block sidenav %}
+            {% endblock %}
+        </div>
+    </div>
+    <div class="modal fade" id="upload">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Upload image file</h4>
+                </div>
+                <div class="modal-body">
+                    <img v-if="!image" src="/static/weblog/img/user.png" alt="Avatar" />
+                    <img v-else :src="image" />
+                    <form class="form-inline" action="/api/image/{{ request.get_user.next_id }}" method="post" enctype="multipart/form-data">
+                        <label class="btn btn-primary">Browse
+                            <input type="file" name="file" @change="onFileChange" style="display:none">
+                        </label>
+                        <button v-show="image" type="submit" class="btn btn-success">Upload</button>
+                        <a v-show="image" class="btn btn-warning" @click="removeImage">Remove</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="signin">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Sign In</h4>
+                </div>
+                <div class="modal-body">
+                    <p v-text="message" id="error" hidden></p>
+                    <form id="signinform" @submit.prevent="signin" class="form">
+                        <div class="form-group">
+                            <label for="usrname"><span class="glyphicon glyphicon-user"></span> E-mail</label>
+                            <input type="email" class="form-control" v-model="email" placeholder="Enter email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="psw"><span class="glyphicon glyphicon-eye-open"></span> Password</label>
+                            <input type="password" class="form-control" v-model="password" placeholder="Enter password" required>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-block">
+                            <span class="glyphicon glyphicon-off"></span> Sign in
+                        </button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <p>Don't have an account? <a href="/register">Sign Up</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="container-fluid text-center">
+        <p>&copy; 2016 Jiayi Li. All rights reserved.</p>
+        <p>Proudly powered by <a target="_blank" href="http://getbootstrap.com">Bootstrap</a> and <a target="_blank" href="https://www.djangoproject.com/">Django</a></p>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="{% static 'weblog/js/vue.min.js' %}"></script>
+    <script src="{% static 'weblog/js/sha1.min.js' %}"></script>
+    <script src="{% static 'weblog/js/signin.js' %}"></script>
+    <script src="{% static 'weblog/js/upload.js' %}"></script>
+    {% block script %}<!-- add scripts here-->{% endblock %}
+</body>
+</html>

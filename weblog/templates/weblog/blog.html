@@ -1,0 +1,96 @@
+{% extends 'weblog/sidenav.html' %}
+
+{% block title %}{{ blog.title }}{% endblock %}
+{% block content %}
+<div class="col-sm-9" id="main">
+    <h2 class="text-primary">
+        {{ blog.title }}
+        {% if request.get_user.admin %}
+        <a href="/blog/{{blog.auto_id}}/edit/">
+            <button class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i></button>
+        </a>
+        {% endif %}
+    </h2>
+    <h4 class="text-muted"><i class="glyphicon glyphicon-time"></i> Posted by {{ blog.author }}, {{ blog.post_date }}
+        {% if not blog.new_post %}/ Last modified: {{ blog.last_modified }} {% endif %}</h4>
+    <h4>
+        {% for tag in blog.tag.split %}
+        <span class="label label-{{ labels|random }}">{{ tag }}</span>
+        {% endfor %}
+    </h4>
+    {{ blog.content|safe }}<hr>
+    {% if request.get_user %}
+    <h4>Leave a comment:</h4>
+    <form class="form" @submit.prevent="submit">
+        <div class="form-group">
+            <textarea class="form-control" rows="5" v-model="comment" placeholder="Join the discussion..." required></textarea>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-success">Submit</button>
+        </div>
+    </form>
+    {% else %}
+    <h4 class="text-right">Please <a data-toggle="modal" data-target="#signin" id="commentsignin" @click.prevent="clear">sign in</a> to make a comment</h4>
+    {% endif %}
+    <br>
+    <p>Comments <span class="badge" v-text="comments.length"></span></p>
+    <div class="row" id="replyarea" v-for="(index, c) in comments">
+        <div class="col-sm-2 text-center">
+            <img :src="c.image" class="img-circle" alt="Avatar" />
+        </div>
+        <div class="col-sm-10" id="replybody">
+            <h4 v-if="c.user==='{{blog.author}}'" class="text-primary" v-text="c.user"></h4>
+            <h4 v-else class="text-info" v-text="c.user"></h4><h4></h4>
+            <h4><small v-text="c.post_date"></small></h4>
+            <h4 style="float:right" class="text-muted" v-text="'#'+(comments.length-index)"></h4>
+            <p id="replycontent" v-html="c.content"></p>
+            {% if request.get_user %}
+            <a @click="replyBox(c.id, index, 1, '')" onclick="blackMagic($(this), 1)" id="replybutton">
+                <i class="glyphicon glyphicon-share-alt"></i> Reply
+            </a>
+            {% if request.get_user.admin %}
+            <a @click="delete('comments', c.id)" id="deletebutton"><i class="glyphicon glyphicon-trash"></i> Delete</a>
+            {% endif %}
+            {% else %}
+            <a id="noreply" class="text-muted"><i class="glyphicon glyphicon-share-alt"></i></a>
+            {% endif %}
+            <div class="row" id="subbox" v-if="c.subcomment" v-for="sub in c.subcomment">
+                <div class="col-sm-1">
+                    <img :src="sub.image" class="img-circle" alt="Avatar" />
+                </div>
+                <div class="col-sm-11" id="replybody">
+                    <h5 v-if="sub.user==='{{blog.author}}'" class="text-primary" v-text="sub.user"></h5>
+                    <h5 v-else class="text-info" v-text="sub.user"></h5><h5></h5>
+                    <h4><small v-text="sub.post_date"></small></h4>
+                    <p v-html="sub.content"></p>
+                    {% if request.get_user %}
+                    <a @click="replyBox(c.id, index, 2, sub.user)" onclick="blackMagic($(this), 2)" id="replybutton2">
+                        <i class="glyphicon glyphicon-share-alt"></i> Reply
+                    </a>
+                    {% if request.get_user.admin %}
+                    <a @click="delete('subcomments', sub.id)" id="deletebutton2">
+                        <i class="glyphicon glyphicon-trash"></i> Delete
+                    </a>
+                    {% endif %}
+                    {% else %}
+                    <a id="noreply2" class="text-muted"><i class="glyphicon glyphicon-share-alt"></i></a>
+                    {% endif %}
+                </div>
+            </div>
+            <form class="form" @submit.prevent="reply" style="display:none"><br>
+                <div class="row">
+                    <div class="form-group col-sm-10">
+                        <textarea class="form-control" rows="3" v-text="sth" v-model="subcomment" required></textarea>
+                    </div>
+                    <div class="form-group col-sm-2">
+                        <button class="btn btn-lg">Submit</button>
+                    </div>
+                </div>
+            </form><hr>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="/static/weblog/js/blog.js"></script>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'weblog/__base__.html' %}
+{% block sidenav %}
+{% load static %}
+<div class="col-sm-3 sidenav text-center">
+    {% if request.get_user %}
+    <img src="{{ request.get_user.image }}" alt="User Avatar" class="img-thumbnail img-responsive" />
+    {% else %}
+    <img src="{% static 'weblog/img/user.png' %}" alt="Default Avatar" class="img-thumbnail img-responsive" />
+    {% endif %}
+</div>
+{% endblock %}
