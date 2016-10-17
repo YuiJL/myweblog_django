@@ -26,6 +26,8 @@ urlpatterns = [
     url(r'^blog/new/(?P<auto_id>[0-9]*)$', views.blog_post, name='blog_post'),
     # /blog/<auto_id>/edit/
     url(r'^blog/(?P<auto_id>[0-9]+)/edit/$', views.blog_post, name='blog_post'),
+    # /api/blog/<auto_id>/
+    url(r'^api/blog/(?P<auto_id>[0-9]*)/?$', views.api_blog, name='api_blog'),
     # /api/blog/<auto_id>/comments/
     url(r'^api/blog/(?P<auto_id>[0-9]+)/comments/$', views.api_blog_comment, name='api_blog_comment'),
     # /api/blog/<auto_id>/comments/<comment_id>/
