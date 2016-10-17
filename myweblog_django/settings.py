@@ -20,14 +20,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # reCAPTCHA key pair, please keep SECRET
-RECAPTCHA_SITE_KEY = "6LcD7QcUAAAAACmXjSwnke9yMsCLi0nuf9e5QRQa"
-RECAPTCHA_SECRET_KEY = "6LcD7QcUAAAAAGr9FCwLwjkllkq5CVUGmhpWzvCM" 
+RECAPTCHA_SITE_KEY = '6LcD7QcUAAAAA***************************'
+RECAPTCHA_SECRET_KEY = '6LcD7QcUAAAAA***************************' 
 
 # Cookie name
 COOKIE_NAME = 'MyWeblogSession'
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'c4_*u70v(d2hc3#nf*2y(h(!u8$*9r=5$(%fa4j(htbiqk34_b'
+SECRET_KEY = '**************************************************'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
