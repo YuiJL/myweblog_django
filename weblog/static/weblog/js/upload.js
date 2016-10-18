@@ -1,16 +1,25 @@
 $(document).ready(function() {
     $('#avatar').click(function() {
         upload.image = '';
+        upload.url = '';
+        upload.isImg = false;
+        upload.isURL = false;
     });
 });
 
 var upload = new Vue({
     el: '#upload',
     data: {
-        image: ''
+        image: '',
+        url: '',
+        isImg: false,
+        isURL: false
     },
     methods: {
         onFileChange: function(e) {
+            this.url = '';
+            this.isURL = false;
+            this.isImg = true;
             var file = e.target.files[0];
             if (file.name.length < 1) {
                 return;
@@ -29,8 +38,26 @@ var upload = new Vue({
                 reader.readAsDataURL(file);
             }
         },
+        uploadURL: function() {
+            var self = this;
+            $.ajax('/api/image_from_url/', {
+                data: {url: self.image},
+                method: "POST"
+            });
+        },
+        addUrl: function() {
+            if (this.url === '')
+                return;
+            this.image = this.url;
+            this.url = '';
+            this.isImg = false;
+            this.isURL = true;
+        },
         removeImage: function() {
             this.image = '';
+            this.url = '';
+            this.isImg = false;
+            this.isURL = false;
         }
     }
 })

@@ -3,7 +3,12 @@
 
 __author__ = 'Jiayi Li'
 
-import math, re, os, uuid
+import math
+import os
+import re
+import uuid
+
+import requests
 
 from datetime import datetime
 
@@ -15,8 +20,8 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils import timezone
 
-from weblog.models import Blog, Comment, Subcomment, User
-from weblog.utils import allowed_file, check_recaptcha, get_or_none, user_to_cookie, valid_password, view_to_cookie
+from weblog.models import *
+from weblog.utils import *
 from weblog.templatetags.weblog_extras import markdown_filter
 
 
@@ -309,6 +314,27 @@ def upload(request):
             with open(os.path.join(settings.UPLOAD_FOLDER, filename), 'wb+') as destination:
                 for chunk in file.chunks():
                     destination.write(chunk)
+        else:
+            raise PermissionDenied
+        user = get_object_or_404(User, next_id=request.get_user.next_id)
+        user.image = '/static/weblog/img/' + filename
+        user.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def url_upload(request):
+    
+    '''
+    image file(from url) uploader
+    '''
+    
+    if request.method == 'POST':
+        url = request.POST.get('url', '')
+        if url and allowed_file(url):
+            r = requests.get(url)
+            filename = '.'.join([str(request.get_user.id), url.rsplit('.', 1)[1]])
+            with open(os.path.join(settings.UPLOAD_FOLDER, filename), 'wb+') as destination:
+                destination.write(r.content)
         else:
             raise PermissionDenied
         user = get_object_or_404(User, next_id=request.get_user.next_id)

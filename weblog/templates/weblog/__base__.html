@@ -69,13 +69,18 @@
                 <div class="modal-body">
                     <img v-if="!image" src="/static/weblog/img/user.png" alt="Avatar" />
                     <img v-else :src="image" />
-                    <form class="form-inline" action="/api/image/{{ request.get_user.next_id.hex }}/" method="post" enctype="multipart/form-data">
+                    <form class="form-inline" action="/api/image/{{ request.get_user.next_id.hex }}/" method="post" enctype="multipart/form-data" id="uploader">
                         <label class="btn btn-primary">Browse
                             <input type="file" name="file" @change="onFileChange" style="display:none">
                         </label>
-                        <button v-show="image" type="submit" class="btn btn-success">Upload</button>
-                        <a v-show="image" class="btn btn-warning" @click="removeImage">Remove</a>
-                    </form>
+                        <button v-show="isImg" type="submit" class="btn btn-success">Upload</button>
+                        <a v-show="isURL" class="btn btn-success" @click="uploadURL">Upload</a>
+                        <a v-show="isImg" class="btn btn-warning" @click="removeImage">Remove</a>
+                        <a v-show="isURL" class="btn btn-warning" @click="removeImage">Remove</a>
+                    </form><br>
+                    <span>From URL:</span>
+                    <input v-model="url">
+                    <button class="btn btn-default btn-sm" @click="addUrl">OK</button>
                 </div>
             </div>
         </div>
