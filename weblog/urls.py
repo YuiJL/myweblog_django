@@ -34,4 +34,6 @@ urlpatterns = [
     url(r'^api/blog/(?P<auto_id>[0-9]+)/comments/(?P<comment_id>[0-9]+)/$', views.api_subcomment, name='api_subcomment'),
     # /api/<key>/<id>/delete/
     url(r'^api/(?P<key>comments|subcomments)/(?P<id>[0-9]+)/delete/$', views.delete, name='delete'),
+    # /api/image/<next_id>/
+    url(r'^api/image/[0-9a-z]+/$', views.upload, name='upload'),
 ]

@@ -3,19 +3,20 @@
 
 __author__ = 'Jiayi Li'
 
-import math, re, uuid
+import math, re, os, uuid
 
 from datetime import datetime
 
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
+from django.core.files import File
 from django.http import Http404, HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils import timezone
 
 from weblog.models import Blog, Comment, Subcomment, User
-from weblog.utils import user_to_cookie, view_to_cookie, check_recaptcha, valid_password, get_or_none
+from weblog.utils import allowed_file, check_recaptcha, get_or_none, user_to_cookie, valid_password, view_to_cookie
 from weblog.templatetags.weblog_extras import markdown_filter
 
 
@@ -289,3 +290,28 @@ def delete(request, key, id):
         return HttpResponseRedirect(reverse('weblog:api_blog_comment', args=(auto_id,)))
     else:
         raise PermissionDenied
+
+        
+def upload(request):
+    
+    '''
+    image file uploader
+    '''
+    
+    if request.method == 'POST':
+        if 'file' not in request.FILES:
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        file = request.FILES['file']
+        if file.name == '':
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        if file and allowed_file(file.name):
+            filename = '.'.join([str(request.get_user.id), file.name.rsplit('.', 1)[1]])
+            with open(os.path.join(settings.UPLOAD_FOLDER, filename), 'wb+') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
+        else:
+            raise PermissionDenied
+        user = get_object_or_404(User, next_id=request.get_user.next_id)
+        user.image = '/static/weblog/img/' + filename
+        user.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

@@ -101,8 +101,15 @@ def valid_password(user, password):
     sha1.update(user.email.encode('utf-8'))
     sha1.update(b'the-Salt')
     return sha1.hexdigest() == user.password
+
+
+def allowed_file(filename):
     
+    '''allowed extension for uploaded files'''
     
+    return '.' in filename and filename.rsplit('.', 1)[1] in getattr(settings, 'ALLOWED_EXTENSIONS', set())
+
+
 def get_or_none(model, *args, **kw):
     
     '''

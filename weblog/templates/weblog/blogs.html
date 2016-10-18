@@ -5,9 +5,9 @@
 <div class="col-sm-9" id="home">
     <div class="text-right">
         <button class="btn btn-default btn-xs" @click="viewmode('?view=catalog')">
-            <span class="glyphicon glyphicon-list"></span> Catalog View</button>
+            <span class="glyphicon glyphicon-align-justify"></span> Catalog View</button>
         <button class="btn btn-default btn-xs" @click="viewmode('?view=summary')">
-            <span class="glyphicon glyphicon-th"></span> Summary View</button>
+            <span class="glyphicon glyphicon-th-list"></span> Summary View</button>
     </div>
     {% if request.get_view != 'catalog' %}
     {% for blog in blog_list %}
