@@ -5,20 +5,24 @@
 <div class="col-sm-9" id="main">
     <h2 class="text-primary">
         {{ blog.title }}
-        {% if request.get_user.name == blog.author.name and request.get_user.admin %}
-        <a href="/blog/{{blog.auto_id}}/edit/">
-            <button class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i></button>
-        </a>
-        {% endif %}
     </h2>
-    <h4 class="text-muted"><i class="glyphicon glyphicon-time"></i> Posted by {{ blog.author.name }}, {{ blog.post_date|date:"M d/Y, h:i:s a" }}
-        {% if not blog.new_post %}/ Last modified: {{ blog.last_modified|date:"M d/Y, h:i:s a" }} {% endif %}</h4>
+    <h4 class="text-muted"><i class="glyphicon glyphicon-time"></i> Posted by {{ blog.author.name }}, {{ blog.post_date|date:"M d, Y, h:i:s a" }}
+        {% if not blog.new_post %}/ Last modified: {{ blog.last_modified|date:"M d, Y, h:i:s a" }} {% endif %}</h4>
     <h4>
         {% for tag in blog.tag.split %}
         <span class="label label-{{ labels|random }}" id="randomlabel">{{ tag }}</span>
         {% endfor %}
     </h4>
-    {{ blog.content|markdown|safe }}<hr>
+    {{ blog.content|markdown|safe }}
+    {% if request.get_user.name == blog.author.name and request.get_user.admin %}
+    <a href="/blog/{{ blog.auto_id }}/edit/" id="blogbutton1">
+        <button class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i> Edit</button>
+    </a>
+    <a href="/api/blogs/{{ blog.id }}/delete/" id="blogbutton2">
+        <button class="btn btn-xs btn-danger"><i class="glyphicon glyphicon-trash"></i> Delete</button>
+    </a>
+    {% endif %}
+    <hr>
     {% if request.get_user %}
     <h4>Leave a comment:</h4>
     <form class="form" @submit.prevent="submit">

@@ -281,17 +281,20 @@ def delete(request, key, id):
     '''
     
     if request.get_user and request.get_user.admin:
-        if request.method == 'POST':
-            if key == 'comments':
-                comment = get_object_or_404(Comment, pk=id)
-                auto_id = comment.blog.auto_id
-                comment.delete()
-            elif key == 'subcomments':
-                subcomment = get_object_or_404(Subcomment, pk=id)
-                auto_id = subcomment.comment.blog.auto_id
-                subcomment.delete()
-            else:
-                raise Http404('<h1>404 Not Found</h1>')
+        if key == 'comments':
+            comment = get_object_or_404(Comment, pk=id)
+            auto_id = comment.blog.auto_id
+            comment.delete()
+        elif key == 'subcomments':
+            subcomment = get_object_or_404(Subcomment, pk=id)
+            auto_id = subcomment.comment.blog.auto_id
+            subcomment.delete()
+        elif key == 'blogs':
+            blog = get_object_or_404(Blog, pk=id)
+            blog.delete()
+            return HttpResponseRedirect(reverse('weblog:index'))
+        else:
+            raise Http404('<h1>404 Not Found</h1>')
         return HttpResponseRedirect(reverse('weblog:api_blog_comment', args=(auto_id,)))
     else:
         raise PermissionDenied
@@ -340,4 +343,4 @@ def url_upload(request):
         user = get_object_or_404(User, next_id=request.get_user.next_id)
         user.image = '/static/weblog/img/' + filename
         user.save()
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    return HttpResponse('Success')
