@@ -86,7 +86,7 @@ var vm = new Vue({
         delete: function(key, id) {
             var self = this;
             $.ajax('/api/' + key + '/' + id + '/delete/', {
-                method: "POST"
+                method: "GET"
             }).done(function(data) {
                 self.comments = data.comments;
             });

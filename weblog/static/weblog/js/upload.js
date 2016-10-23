@@ -17,9 +17,6 @@ var upload = new Vue({
     },
     methods: {
         onFileChange: function(e) {
-            this.url = '';
-            this.isURL = false;
-            this.isImg = true;
             var file = e.target.files[0];
             if (file.name.length < 1) {
                 return;
@@ -32,6 +29,9 @@ var upload = new Vue({
             } else {
                 var reader = new FileReader();
                 var self = this;
+                self.url = '';
+                self.isURL = false;
+                self.isImg = true;
                 reader.onload = function(e) {
                     self.image = e.target.result;
                 }
@@ -43,6 +43,8 @@ var upload = new Vue({
             $.ajax('/api/image_from_url/', {
                 data: {url: self.image},
                 method: "POST"
+            }).done(function() {
+                return location.assign(location.pathname);
             });
         },
         addUrl: function() {

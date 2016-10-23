@@ -169,6 +169,10 @@ a:hover {
     margin-top: 20px;
 }
 
+#blogbutton1, #blogbutton2 {
+    font-family: Sans-serif;
+}
+
 .col-sm-2.text-center img {
     width: 70px;
     height: 70px;

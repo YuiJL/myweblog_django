@@ -18,14 +18,14 @@
         <span class="label label-{{ labels|random }}" id="randomlabel">{{ tag }}</span> {% endfor %}
     </h5>
     {{ blog.summary|markdown|safe }}
-    <p><a href="/blog/{{ blog.auto_id }}">Read More <span class="glyphicon glyphicon-chevron-right"></span></a></p><hr>
+    <p><a href="/blog/{{ blog.auto_id }}/">Read More <span class="glyphicon glyphicon-chevron-right"></span></a></p><hr>
     {% endfor %}
     {% else %}
     <table class="table">
         <tbody>
             {% for blog in blog_list %}
             <tr>
-                <td class="col-sm-6"><a href="/blog/{{ blog.auto_id }}">{{ blog.title }}</a></td>
+                <td class="col-sm-6"><a href="/blog/{{ blog.auto_id }}/">{{ blog.title }}</a></td>
                 <td class="col-sm-2 text-right">{{ blog.author.name }}</td>
                 <td class="col-sm-4 text-right">{{ blog.post_date|date:"SHORT_DATE_FORMAT" }}</td>
             </tr>
