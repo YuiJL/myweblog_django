@@ -3,7 +3,10 @@
 
 __author__ = 'Jiayi Li'
 
-import hashlib, time, json
+import hashlib
+import json
+import time
+
 import requests
 
 from datetime import datetime

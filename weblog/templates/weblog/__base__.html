@@ -70,6 +70,7 @@
                     <img v-if="!image" src="/static/weblog/img/user.png" alt="Avatar" />
                     <img v-else :src="image" />
                     <form class="form-inline" action="/api/image/{{ request.get_user.next_id.hex }}/" method="post" enctype="multipart/form-data" id="uploader">
+                        {% csrf_token %}
                         <label class="btn btn-primary">Browse
                             <input type="file" name="file" @change="onFileChange" style="display:none">
                         </label>
@@ -123,6 +124,11 @@
     <script src="{% static 'weblog/js/sha1.min.js' %}"></script>
     <script src="{% static 'weblog/js/signin.js' %}"></script>
     <script src="{% static 'weblog/js/upload.js' %}"></script>
+    <script>
+        $.ajaxSetup({
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+        });
+    </script>
     {% block script %}<!-- add scripts here-->{% endblock %}
 </body>
 </html>

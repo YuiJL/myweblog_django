@@ -15,6 +15,7 @@ from datetime import datetime
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.core.files import File
+from django.core.mail import send_mail, BadHeaderError
 from django.http import Http404, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
