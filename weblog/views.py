@@ -233,7 +233,7 @@ def api_blog_comment(request, auto_id):
         dt = datetime.fromtimestamp(t).strftime('%I:%M:%S %p, %a, %b %d, %Y')
         c_dict = dict(
             user = c.user.name,
-            image = c.user.image,
+            image = c.user.image_cropped,
             content = markdown_filter(c.content),
             post_date = dt,
             id = c.id
@@ -247,7 +247,7 @@ def api_blog_comment(request, auto_id):
                 sub_dt = datetime.fromtimestamp(sub_t).strftime('%I:%M:%S %p, %a, %b %d, %Y')
                 sub_dict = dict(
                     user = sub.user.name,
-                    image = sub.user.image,
+                    image = sub.user.image_cropped,
                     content = markdown_filter(sub.content),
                     post_date = sub_dt,
                     id = sub.id
@@ -315,13 +315,15 @@ def upload(request):
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
         if file and allowed_file(file.name):
             filename = '.'.join([str(request.get_user.id), file.name.rsplit('.', 1)[1]])
-            with open(os.path.join(settings.UPLOAD_FOLDER, filename), 'wb+') as destination:
+            path = os.path.join(settings.UPLOAD_FOLDER, filename)
+            with open(path, 'wb+') as destination:
                 for chunk in file.chunks():
                     destination.write(chunk)
         else:
             raise PermissionDenied
         user = get_object_or_404(User, next_id=request.get_user.next_id)
         user.image = '/static/weblog/img/' + filename
+        user.image_cropped = crop_image(path, filename)
         user.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
@@ -337,11 +339,13 @@ def url_upload(request):
         if url and allowed_file(url):
             r = requests.get(url)
             filename = '.'.join([str(request.get_user.id), url.rsplit('.', 1)[1]])
-            with open(os.path.join(settings.UPLOAD_FOLDER, filename), 'wb+') as destination:
+            path = os.path.join(settings.UPLOAD_FOLDER, filename)
+            with open(path, 'wb+') as destination:
                 destination.write(r.content)
         else:
             raise PermissionDenied
         user = get_object_or_404(User, next_id=request.get_user.next_id)
         user.image = '/static/weblog/img/' + filename
+        user.image_cropped = crop_image(path, filename)
         user.save()
     return HttpResponse('Success')

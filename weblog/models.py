@@ -17,6 +17,7 @@ class User(models.Model):
     created = models.DateTimeField('date created')
     admin = models.BooleanField(default=False)
     image = models.CharField(max_length=200, default='/static/weblog/img/user.png')
+    image_cropped = models.CharField(max_length=200, default='/static/weblog/img/user.png')
     
     def __str__(self):
         return self.name

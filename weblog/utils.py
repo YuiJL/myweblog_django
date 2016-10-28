@@ -5,6 +5,7 @@ __author__ = 'Jiayi Li'
 
 import hashlib
 import json
+import os
 import time
 
 import requests
@@ -14,6 +15,7 @@ from datetime import datetime
 from django.conf import settings
 from django.http import HttpResponse
 
+from PIL import Image
 from weblog.models import User
 
 def user_to_cookie(request, user, max_age=86400):
@@ -123,3 +125,20 @@ def get_or_none(model, *args, **kw):
         return model.objects.get(*args, **kw)
     except model.DoesNotExist:
         return None
+    
+
+def crop_image(path, filename):
+    
+    '''crop user image to square'''
+    
+    im = Image.open(path)
+    w, h = im.size
+    if w != h:
+        if w < h:
+            box = (0, 0, w, w)
+        else:
+            box = ((w-h)/2, 0, h+(w-h)/2, h)
+        im = im.crop(box)
+    filename = '_'.join(['cropped', filename])
+    im.save(os.path.join(os.path.split(path)[0], filename))
+    return os.path.join('/static/weblog/img/', filename)
